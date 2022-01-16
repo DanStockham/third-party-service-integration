@@ -1,19 +1,30 @@
+using System.Threading.Tasks;
+using CUNAMUTUAL_TAKEHOME.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CUNAMUTUAL_TAKEHOME.Controllers
 {
     public class ProxyController : Controller
     {
-        // POST
-        [Route("request")]
-        public IActionResult Index(Request request)
-        {
-            return Ok();
-        }
-    }
+        private IProxyService _thirdPartyService;
 
-    public class Request
-    {
-        public string Body { get; set; }
+        public ProxyController(IProxyService proxyService)
+        {
+            _thirdPartyService = proxyService;
+        }
+        
+        [HttpPost]
+        [Route("request")]
+        public async Task<IActionResult> RequestService([FromBody] ServiceRequest serviceRequest)
+        {
+            string serviceResponse = await _thirdPartyService.RequestCallback(serviceRequest);
+            var response = new ContentResult
+            {
+                StatusCode = 200,
+                Content = serviceResponse
+            };
+            
+            return response;
+        }
     }
 }

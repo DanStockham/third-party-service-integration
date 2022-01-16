@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using CUNAMUTUAL_TAKEHOME.Repositories;
+using CUNAMUTUAL_TAKEHOME.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,6 +31,13 @@ namespace CUNAMUTUAL_TAKEHOME
         {
             services.AddControllers();
             services.AddSwaggerGen();
+            
+            services.AddHttpClient<IHttpClientFactory>("ThirdPartyService")
+                .ConfigureHttpMessageHandlerBuilder(o => new HttpMessageHandlerStub() );
+            
+            services.AddSingleton<MyContext>();
+            services.AddSingleton<IProxyService, ProxyService>();
+            services.AddSingleton<IServiceRequestRepository, ServiceRequestRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

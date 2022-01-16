@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CUNAMUTUAL_TAKEHOME", "CUNAMUTUAL_TAKEHOME\CUNAMUTUAL_TAKEHOME.csproj", "{8BD4DCA7-7000-4F92-9E2F-A300437811D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CUNAMUTUAL_TAKEHOME_TESTS", "CUNAMUTUAL_TAKEHOME_TESTS\CUNAMUTUAL_TAKEHOME_TESTS.csproj", "{E943A93F-4F47-4D13-9AD7-9B203D18C1D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8BD4DCA7-7000-4F92-9E2F-A300437811D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BD4DCA7-7000-4F92-9E2F-A300437811D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BD4DCA7-7000-4F92-9E2F-A300437811D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BD4DCA7-7000-4F92-9E2F-A300437811D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E943A93F-4F47-4D13-9AD7-9B203D18C1D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E943A93F-4F47-4D13-9AD7-9B203D18C1D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E943A93F-4F47-4D13-9AD7-9B203D18C1D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E943A93F-4F47-4D13-9AD7-9B203D18C1D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

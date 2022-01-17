@@ -7,6 +7,7 @@ using CUNAMUTUAL_TAKEHOME.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using NuGet.Frameworks;
 using Xunit;
 
 namespace CUNAMUTUAL_TAKEHOME_TESTS
@@ -18,9 +19,9 @@ namespace CUNAMUTUAL_TAKEHOME_TESTS
         {
             var mockProxyService = new Mock<IProxyService>();
             var mockServiceItemRepo = new Mock<IServiceItemRepository>();
-            var request = new ServiceRequest();
+            var request = new ServiceItemRequest();
 
-            mockProxyService.Setup(x => x.RequestCallback(It.IsAny<ServiceRequest>())).ReturnsAsync("STARTED");
+            mockProxyService.Setup(x => x.RequestCallback(It.IsAny<ServiceItem>())).ReturnsAsync("STARTED");
             
             var target = new ProxyController(mockProxyService.Object, mockServiceItemRepo.Object);
             var actual = await target.RequestService(request) as ContentResult;
@@ -33,7 +34,7 @@ namespace CUNAMUTUAL_TAKEHOME_TESTS
         {
             var mockProxyService = new Mock<IProxyService>();
             var mockServiceItemRepo = new Mock<IServiceItemRepository>();
-            var request = new ServiceRequest();
+            var request = new ServiceItemRequest();
             
             var target = new ProxyController(mockProxyService.Object, mockServiceItemRepo.Object);
             var actual = await target.RequestService(request) as ContentResult;
@@ -113,6 +114,35 @@ namespace CUNAMUTUAL_TAKEHOME_TESTS
             var actual = await target.Callback(It.IsAny<string>(), serviceItemUpdatePayload) as ContentResult;
             
             Assert.Equal(400, actual?.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetStatus_ShouldReturnServiceItemOnSuccess()
+        {
+            var mockProxyService = new Mock<IProxyService>();
+            var mockServiceItemRepo = new Mock<IServiceItemRepository>();
+
+            mockServiceItemRepo.Setup((x => x.GetServiceItem((It.IsAny<string>())))).ReturnsAsync(new ServiceItem());
+
+            var target = new ProxyController(mockProxyService.Object, mockServiceItemRepo.Object);
+            var actual = await target.GetStatus(It.IsAny<string>()) as ContentResult;
+            
+            Assert.NotNull(actual.Content);
+            Assert.Equal(200, actual.StatusCode);
+        }
+        
+        [Fact]
+        public async Task GetStatus_ShouldReturnNotFoundWhenServiceItemNotExist()
+        {
+            var mockProxyService = new Mock<IProxyService>();
+            var mockServiceItemRepo = new Mock<IServiceItemRepository>();
+
+            mockServiceItemRepo.Setup((x => x.GetServiceItem((It.IsAny<string>())))).ReturnsAsync(() => null);
+
+            var target = new ProxyController(mockProxyService.Object, mockServiceItemRepo.Object);
+            var actual = await target.GetStatus(It.IsAny<string>()) as ContentResult;
+            
+            Assert.Equal(404, actual.StatusCode);
         }
     }
 }

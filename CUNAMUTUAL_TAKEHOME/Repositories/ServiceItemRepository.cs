@@ -26,7 +26,8 @@ namespace CUNAMUTUAL_TAKEHOME.Repositories
                 }
 
                 serviceItem.Status = status;
-                //_dbContext.ServiceItems.Update(serviceItem);
+                serviceItem.LastUpdateAt = DateTime.Now.ToUniversalTime();
+                
                 await _dbContext.SaveChangesAsync();
 
                 return serviceItem;
@@ -55,6 +56,7 @@ namespace CUNAMUTUAL_TAKEHOME.Repositories
 
                 serviceItem.Status = status;
                 serviceItem.Detail = detail;
+                serviceItem.LastUpdateAt = DateTime.Now.ToUniversalTime();
 
                 await _dbContext.SaveChangesAsync();
 
@@ -72,6 +74,8 @@ namespace CUNAMUTUAL_TAKEHOME.Repositories
             try
             {
                 serviceItem.Identifier = Guid.NewGuid().ToString();
+                serviceItem.CreatedAt = DateTime.Now.ToUniversalTime();
+
                 var newServiceItem = await _dbContext.ServiceItems.AddAsync(serviceItem);
                 await _dbContext.SaveChangesAsync();
 

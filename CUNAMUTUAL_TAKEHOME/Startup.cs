@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CUNAMUTUAL_TAKEHOME.Repositories;
 using CUNAMUTUAL_TAKEHOME.Services;
@@ -14,6 +15,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace CUNAMUTUAL_TAKEHOME
 {
@@ -30,6 +34,12 @@ namespace CUNAMUTUAL_TAKEHOME
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+            
             services.AddSwaggerGen();
             
             services.AddHttpClient("ThirdPartyService")

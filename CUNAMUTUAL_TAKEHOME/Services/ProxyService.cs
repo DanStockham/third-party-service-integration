@@ -20,15 +20,15 @@ namespace CUNAMUTUAL_TAKEHOME.Services
             _httpClient = httpClientFactory.CreateClient("ThirdPartyService");
         }
         
-        public async Task<string> RequestCallback(ServiceRequest serviceRequest)
+        public async Task<string> RequestCallback(ServiceItem serviceItem)
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri($"{baseUrl}{requestRoute}");
             
             var payload = new ThirdPartyRequest
             {
-                Body = serviceRequest.Body,
-                Callback = $"callback/{serviceRequest.Id}"
+                Body = serviceItem.Body,
+                Callback = $"callback/{serviceItem.Identifier}"
             };
 
             request.Content = new StringContent(

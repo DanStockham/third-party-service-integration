@@ -7,6 +7,7 @@ using CUNAMUTUAL_TAKEHOME.Repositories;
 using CUNAMUTUAL_TAKEHOME.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace CUNAMUTUAL_TAKEHOME.Controllers
 {
@@ -23,20 +24,19 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
 
         [HttpPost]
         [Route("request")]
-        public async Task<IActionResult> RequestService([FromBody] ServiceRequest serviceRequest)
+        public async Task<IActionResult> RequestService([FromBody] ServiceItemRequest serviceItemRequest)
         {
             try
             {
                 ServiceItem newServiceItem = new ServiceItem()
                 {
                     Status = Statuses.NONE,
+                    Body = serviceItemRequest.Body
                 };
 
                 string identifier = await _repo.AddServiceItem(newServiceItem);
 
-                serviceRequest.Id = identifier;
-
-                string serviceResponse = await _thirdPartyService.RequestCallback(serviceRequest);
+                string serviceResponse = await _thirdPartyService.RequestCallback(newServiceItem);
 
                 if (serviceResponse != Statuses.STARTED.ToString())
                 {
@@ -104,7 +104,6 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
         {
             try
             {
-
                 bool validStatus = Statuses.TryParse(payload.Status, out Statuses status);
 
                 if (!validStatus)
@@ -122,6 +121,38 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
                 return new ContentResult
                 {
                     StatusCode = 204
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500
+                };
+            }
+        }
+
+        [HttpGet]
+        [Route("status/{id}")]
+        public async Task<IActionResult> GetStatus([FromRoute] string id)
+        {
+            try
+            {
+                var serviceItem = await _repo.GetServiceItem(id);
+
+                if (serviceItem is null)
+                {
+                    return new ContentResult
+                    {
+                        StatusCode = 404
+                    };
+                }
+
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    Content = JsonConvert.SerializeObject(serviceItem),
+                    ContentType = "application/json"
                 };
             }
             catch (Exception ex)

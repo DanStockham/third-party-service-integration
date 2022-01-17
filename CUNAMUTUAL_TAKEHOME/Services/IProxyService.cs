@@ -5,6 +5,6 @@ namespace CUNAMUTUAL_TAKEHOME.Services
 {
     public interface IProxyService
     {
-        Task<string> RequestCallback(ServiceRequest serviceRequest);
+        Task<string> RequestCallback(ServiceItem serviceItem);
     }
 }

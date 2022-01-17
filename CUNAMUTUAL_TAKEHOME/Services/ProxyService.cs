@@ -5,7 +5,6 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using CUNAMUTUAL_TAKEHOME.Controllers;
-using CUNAMUTUAL_TAKEHOME.Repositories;
 using Newtonsoft.Json;
 
 namespace CUNAMUTUAL_TAKEHOME.Services
@@ -15,23 +14,21 @@ namespace CUNAMUTUAL_TAKEHOME.Services
         private const string baseUrl = "http://example.com/";
         private const string requestRoute = "request";
         private readonly HttpClient _httpClient;
-        private readonly IServiceRequestRepository _repo;
 
-        public ProxyService(IServiceRequestRepository repo, IHttpClientFactory httpClientFactory)
+        public ProxyService(IHttpClientFactory httpClientFactory)
         {
-            _repo = repo;
-            _httpClient = httpClientFactory.CreateClient();
+            _httpClient = httpClientFactory.CreateClient("ThirdPartyService");
         }
         
         public async Task<string> RequestCallback(ServiceRequest serviceRequest)
         {
             var request = new HttpRequestMessage();
-            var uri = new Uri($"{baseUrl}{requestRoute}");
+            request.RequestUri = new Uri($"{baseUrl}{requestRoute}");
             
             var payload = new ThirdPartyRequest
             {
                 Body = serviceRequest.Body,
-                Callback = uri.AbsolutePath
+                Callback = $"callback/{serviceRequest.Id}"
             };
 
             request.Content = new StringContent(
@@ -40,7 +37,7 @@ namespace CUNAMUTUAL_TAKEHOME.Services
 
             var res = await _httpClient.SendAsync(request);
 
-            return res.Content.ToString();
+            return await res.Content.ReadAsStringAsync();
         } 
     }
 }

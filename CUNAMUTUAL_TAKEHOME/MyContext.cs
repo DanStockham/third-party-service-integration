@@ -5,7 +5,7 @@ namespace CUNAMUTUAL_TAKEHOME
 {
     public class MyContext : DbContext
     {
-        public DbSet<ServiceRequest> ServiceRequests { get; set; }
+        public DbSet<ServiceItem> ServiceItems { get; set; }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -14,7 +14,7 @@ namespace CUNAMUTUAL_TAKEHOME
     
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ServiceRequest>().ToTable("ServiceRequests").HasNoKey();
+            modelBuilder.Entity<ServiceItem>().ToTable("ServiceItems");
         }
     }
     

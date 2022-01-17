@@ -32,12 +32,12 @@ namespace CUNAMUTUAL_TAKEHOME
             services.AddControllers();
             services.AddSwaggerGen();
             
-            services.AddHttpClient<IHttpClientFactory>("ThirdPartyService")
-                .ConfigureHttpMessageHandlerBuilder(o => new HttpMessageHandlerStub() );
+            services.AddHttpClient("ThirdPartyService")
+                .ConfigurePrimaryHttpMessageHandler(o => new HttpMessageHandlerStub() );
             
             services.AddSingleton<MyContext>();
+            services.AddSingleton<IServiceItemRepository, ServiceItemRepository>();
             services.AddSingleton<IProxyService, ProxyService>();
-            services.AddSingleton<IServiceRequestRepository, ServiceRequestRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

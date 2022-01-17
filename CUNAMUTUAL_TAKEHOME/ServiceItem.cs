@@ -7,6 +7,7 @@ namespace CUNAMUTUAL_TAKEHOME
         [Key]
         public string Identifier { get; set; }
         public Statuses Status { get; set; }
+        public string Detail { get; set; }
     }
 
     public enum Statuses

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Net;
 using System.Threading.Tasks;
@@ -19,25 +20,24 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
             _thirdPartyService = thirdPartyService;
             _repo = repo;
         }
-        
+
         [HttpPost]
         [Route("request")]
         public async Task<IActionResult> RequestService([FromBody] ServiceRequest serviceRequest)
         {
             try
             {
-                
                 ServiceItem newServiceItem = new ServiceItem()
                 {
                     Status = Statuses.NONE,
                 };
-                
+
                 string identifier = await _repo.AddServiceItem(newServiceItem);
 
                 serviceRequest.Id = identifier;
-                
+
                 string serviceResponse = await _thirdPartyService.RequestCallback(serviceRequest);
-                
+
                 if (serviceResponse != Statuses.STARTED.ToString())
                 {
                     return new ContentResult
@@ -45,7 +45,7 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
                         StatusCode = 500
                     };
                 }
-                
+
                 var response = new ContentResult
                 {
                     StatusCode = 200,
@@ -61,7 +61,6 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
                     StatusCode = 500
                 };
             }
-            
         }
 
         [HttpPost]
@@ -82,7 +81,7 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
                 }
 
                 Statuses.TryParse(status, out Statuses updatedStatus);
-                
+
                 await _repo.UpdateServiceItemStatus(updatedStatus, storedServiceItem.Identifier);
 
                 return new ContentResult
@@ -97,8 +96,41 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
                     StatusCode = 500
                 };
             }
-            
-            
+        }
+
+        [HttpPut]
+        [Route("callback/{id}")]
+        public async Task<IActionResult> Callback([FromRoute, Required] string id, [FromBody] ServiceItemUpdate payload)
+        {
+            try
+            {
+
+                bool validStatus = Statuses.TryParse(payload.Status, out Statuses status);
+
+                if (!validStatus)
+                {
+                    return new ContentResult
+                    {
+                        StatusCode = 400,
+                        Content =
+                            $"status {payload.Status} is not a valid status. Please use the following statuses: PROCESSED, COMPLETED, or ERROR"
+                    };
+                }
+                
+                var updatedServiceItem = _repo.UpdateServiceItem(status, payload.Detail, id);
+                
+                return new ContentResult
+                {
+                    StatusCode = 204
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500
+                };
+            }
         }
     }
 }

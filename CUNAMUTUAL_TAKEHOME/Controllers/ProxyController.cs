@@ -29,8 +29,8 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
 {
     public class ProxyController : Controller
     {
-        private IProxyService _proxyService;
-        private IServiceItemRepository _repo;
+        private readonly IProxyService _proxyService;
+        private readonly IServiceItemRepository _repo;
 
         public ProxyController(IProxyService proxyService, IServiceItemRepository repo)
         {
@@ -42,7 +42,9 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
         /// <remarks>
         /// This endpoint initiates with the theoretical third party service that this api integrates into.
         /// Because the third party service is being stubbed, the response mimics after the third party finishes its request
-        /// against our callback and returns the status string letting us know the request has started
+        /// against our callback and returns the status string letting us know the request has started. The mock third party http client will
+        /// respond differently depend what data is inside `body`. If the `body` contains the string 'success' then the mock http client will respond
+        /// with a success but any other string body will respond with internal server error
         /// </remarks>
         /// <param name="serviceItemRequest"></param>
         /// <returns>A string representing the mimicked status after the POST callback is called </returns>
@@ -60,7 +62,11 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
                     Body = serviceItemRequest.Body
                 };
 
-                await _repo.AddServiceItem(newServiceItem);
+                string identifier = await _repo.AddServiceItem(newServiceItem);
+                
+                // A quick and dirty debug logging. This is will prevent having to query the sqlite database within the container
+                Console.WriteLine($"The service item with identifier {identifier} has been created");
+                
                 string serviceResponse = await _proxyService.RequestCallback(newServiceItem);
 
                 if (serviceResponse != Statuses.STARTED.ToString())
@@ -94,7 +100,8 @@ namespace CUNAMUTUAL_TAKEHOME.Controllers
 
         /// <summary>The POST callback that gets called by the third party service after initial request</summary>
         /// <remarks>
-        ///  The callback will update the request status to STARTED.
+        ///  When the third party service calls back this endpoint, it will also pass back status string of STARTED.
+        ///  This endpoint is expecting that status string to be STARTED.
         /// </remarks>
         /// <param name="id"></param>
         /// <param name="status"></param>

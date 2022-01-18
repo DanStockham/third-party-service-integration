@@ -10,6 +10,11 @@ using Moq;
 using NuGet.Frameworks;
 using Xunit;
 
+/******
+ *  I kept the unit tests limited to the happy and sad paths for the controllers. The proxy service is mocked therefore I didn't want to test mocked data. And in the interest of time, the
+ *  service repository tests were omitted.
+ */
+
 namespace CUNAMUTUAL_TAKEHOME_TESTS
 {
     public class ProxyControllerTests
@@ -39,7 +44,7 @@ namespace CUNAMUTUAL_TAKEHOME_TESTS
             var target = new ProxyController(mockProxyService.Object, mockServiceItemRepo.Object);
             var actual = await target.RequestService(request) as ContentResult;
             
-            Assert.Equal(500, actual?.StatusCode);
+            Assert.Equal(400, actual?.StatusCode);
         }
 
         [Fact]

@@ -4,6 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
+/**************
+ *  Since the third party service is theoretical, I mocked the http message handler on the clients to simulate the request/responses from the
+ *  third party service. It is still limited since some of the actions the third party does is callbacks. Therefore, I mimicked those callbacks in
+ *  the controller actions themselves.
+ */
+
 namespace CUNAMUTUAL_TAKEHOME.Services
 {
     public class HttpMessageHandlerStub : HttpMessageHandler

@@ -14,10 +14,10 @@ Once the image is created, then you can manually start the docker container
 
 In the terminal, navigate to the project folder and first do a build
 
-`cd path/to/project`
+* `cd path/to/project`
 
-`dotnet build`
+* `dotnet build`
 
 And then finally run the service
 
-`dotnet run --project CUNAMUTUAL_TAKEHOME`
+* `dotnet run --project CUNAMUTUAL_TAKEHOME`

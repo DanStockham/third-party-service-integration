@@ -21,3 +21,9 @@ In the terminal, navigate to the project folder and first do a build
 And then finally run the service
 
 `dotnet run --project CUNAMUTUAL_TAKEHOME`
+
+### Using the Swagger
+
+Once the service has been deployed, you can navigate to the swagger doc to interact with rest api service
+
+* `http://localhost:5000/swagger`
